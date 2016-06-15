@@ -319,6 +319,10 @@ jQuery(document).ready(function ($) {
 								if (customerEmail != data.email || customerPostal != data.postal_code) {
 									customerEmail = data.email;
 									customerPostal = data.postal_code;
+									
+									if(window.kco_skip_postal_code) {
+										data.postal_code = '';
+									}
 
 									window._klarnaCheckout(function (api) {
 										api.suspend();
@@ -334,6 +338,8 @@ jQuery(document).ready(function ($) {
 
 									if ('' != data.email) {
 										kco_widget = $('#klarna-checkout-widget');
+										
+										$(document.body).trigger('kco_widget_update', data);
 
 										$.ajax(
 											kcoAjax.ajaxurl,
@@ -355,6 +361,7 @@ jQuery(document).ready(function ($) {
 													}
 
 													$(kco_widget).html(response.data.widget_html);
+													$(document.body).trigger('kco_widget_updated', response);
 												},
 												error: function (response) {
 												}
