@@ -272,16 +272,25 @@ class WC_Gateway_Klarna_Shortcodes {
 		if ( ! defined( 'WOOCOMMERCE_CART' ) ) {
 			define( 'WOOCOMMERCE_CART', true );
 		}
+		
+		do_action('kco_widget_before_calculation', $atts, $this);
+		
 		$woocommerce->cart->calculate_shipping();
 		$woocommerce->cart->calculate_fees();
 		$woocommerce->cart->calculate_totals();
 		?>
+		
+		<?php do_action('kco_widget_before_coupon', $atts, $this); ?>
 
 		<!-- Coupons -->
 		<?php woocommerce_checkout_coupon_form(); ?>
+		
+		<?php do_action('kco_widget_before_cart_items', $atts, $this); ?>
 
 		<!-- Cart items -->
 		<?php echo $this->klarna_checkout_get_cart_contents_html( $atts ); ?>
+		
+		<?php do_action('kco_widget_before_totals', $atts, $this); ?>
 
 		<!-- Totals -->
 		<div>
@@ -311,6 +320,8 @@ class WC_Gateway_Klarna_Shortcodes {
 				</tbody>
 			</table>
 		</div>
+		
+		<?php do_action('kco_widget_before_order_note', $atts, $this); ?>
 
 		<!-- Order note -->
 		<?php if ( 'false' != $atts['order_note'] ) { ?>
@@ -328,6 +339,8 @@ class WC_Gateway_Klarna_Shortcodes {
 				</form>
 			</div>
 		<?php }
+		
+		do_action('kco_widget_after', $atts, $this);
 
 		return ob_get_clean();
 	}
@@ -463,7 +476,7 @@ class WC_Gateway_Klarna_Shortcodes {
 						?>
 						<?php if ( ! empty( $available_methods ) ) { ?>
 
-							<?php if ( 1 === count( $available_methods ) ) {
+							<?php if ( apply_filters('kco_hide_singular_shipping_method', true) && 1 === count( $available_methods ) ) {
 								$method = current( $available_methods );
 								echo wp_kses_post( $method->get_label() ); ?>
 								<input type="hidden" name="shipping_method[<?php echo esc_attr( $index ); ?>]"

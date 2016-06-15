@@ -371,6 +371,14 @@ jQuery(document).ready(function ($) {
 
 							}
 						}
+						
+						$(document.body).trigger('kco_change', data);
+					},
+					shipping_address_change: function(data) {
+						$(document.body).trigger('kco_shipping_address_change', data);
+					},
+					order_total_change: function(data) {
+						$(document.body).trigger('kco_order_total_change', data);
 					}
 				});
 			}
