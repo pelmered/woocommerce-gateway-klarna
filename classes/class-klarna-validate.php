@@ -31,6 +31,8 @@ class WC_Gateway_Klarna_Order_Validate {
 		$data = json_decode( $post_body, true );
 
 		// error_log( 'validate: ' . var_export( $data, true ) );
+		
+		do_action( 'kco_before_validate_checkout', $data );
 
 		$all_in_stock = true;
 		$shipping_chosen = false;
@@ -51,6 +53,8 @@ class WC_Gateway_Klarna_Order_Validate {
 				$shipping_chosen = true;
 			}
 		}
+		
+		do_action( 'kco_validate_checkout', $data, $all_in_stock, $shipping_chosen );
 
 		if ( $all_in_stock && $shipping_chosen ) {
 			header( 'HTTP/1.0 200 OK' );
@@ -62,6 +66,8 @@ class WC_Gateway_Klarna_Order_Validate {
 				header( 'Location: ' . WC()->cart->get_checkout_url() . '?no_shipping' );
 			}
 		}
+		
+		do_action( 'kco_after_validate_checkout', $data, $all_in_stock, $shipping_chosen );
 	} // End function validate_checkout_listener
 
 }
