@@ -2793,7 +2793,7 @@ class WC_Gateway_Klarna_Checkout_Extra {
 			);
 
 			$order->set_address( $billing_address, 'billing' );
-			$order->set_address( $shipping_address, 'shipping' );
+			$order->set_address( apply_filters('kco_set_shipping_address', $shipping_address, $order, $data), 'shipping' );
 
 			$order->calculate_taxes();
 			$sales_tax = round( ( $order->get_cart_tax() + $order->get_shipping_tax() ) * 100 );
