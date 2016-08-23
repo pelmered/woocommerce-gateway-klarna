@@ -319,10 +319,6 @@ jQuery(document).ready(function ($) {
 								if (customerEmail != data.email || customerPostal != data.postal_code) {
 									customerEmail = data.email;
 									customerPostal = data.postal_code;
-									
-									if(window.kco_skip_postal_code) {
-										data.postal_code = '';
-									}
 
 									window._klarnaCheckout(function (api) {
 										api.suspend();
