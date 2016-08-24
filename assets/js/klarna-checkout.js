@@ -76,6 +76,8 @@ jQuery(document).ready(function ($) {
 
 		new_method = $(this).val();
 		kco_widget = $('#klarna-checkout-widget');
+		
+		$(document.body).trigger('kco_widget_update_shipping', new_method);
 
 		$.ajax(
 			kcoAjax.ajaxurl,
@@ -98,6 +100,8 @@ jQuery(document).ready(function ($) {
 							api.resume();
 						});
 					}
+					
+					$(document.body).trigger('kco_widget_updated_shipping', new_method);
 				}
 			}
 		);
