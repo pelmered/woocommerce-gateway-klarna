@@ -72,6 +72,15 @@ if ( $klarna_order['status'] == 'checkout_incomplete' ) {
 	exit;
 }
 
+// Check and save value of additional checkbox if applicable
+if ( $this->show_additional_checkbox() ) {
+    if ( $this->debug == 'yes' ) {
+        $debug_value = ( $klarna_order['merchant_requested']['additional_checkbox'] ) ? 'true' : 'false';
+        $this->log->add('klarna', "[thank-you.php] Setting value of additional checkbox to " . $debug_value . '...');
+    }
+    $this->set_additional_checkbox_value(WC()->session->get('ongoing_klarna_order'), $klarna_order['merchant_requested']['additional_checkbox'] );
+}
+
 // Display Klarna iframe
 if ( $this->is_rest() ) {
 	$snippet = '<div>' . $klarna_order['html_snippet'] . '</div>';
