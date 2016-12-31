@@ -1819,7 +1819,7 @@ class WC_Gateway_Klarna_Checkout extends WC_Gateway_Klarna {
 	 * @return bool
 	 */
 	function show_additional_checkbox() {
-		$show = true;
+		$show = false;
 
 		return apply_filters( 'kco_show_additional_checkbox', $show );
 	}
