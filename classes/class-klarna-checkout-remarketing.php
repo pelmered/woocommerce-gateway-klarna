@@ -22,6 +22,8 @@ class WC_Gateway_Klarna_Checkout_Remarketing {
 	 */
 	public function __construct() {
 		// @TODO: Pre-fill the cart and iframe based on the URL
+		add_action( '', array( $this, 'prefill_cart' ) );
+		add_action( '', array( $this, 'add_customer_data' ) );
 
 		add_filter( 'woocommerce_email_classes', array( $this, 'register_emails' ) );
 	}
