@@ -198,16 +198,17 @@ function init_klarna_gateway() {
 	require_once 'classes/class-wc-klarna-compatibility.php';
 
 	// Include our Klarna classes
-	require_once 'classes/class-klarna-part-payment.php'; // KPM Part Payment
-	require_once 'classes/class-klarna-invoice.php'; // KPM Invoice
-	require_once 'classes/class-klarna-process-checkout-kpm.php'; // KPM process checkout fields
-	require_once 'classes/class-klarna-payment-method-widget.php'; // Partpayment widget
-	require_once 'classes/class-klarna-get-address.php'; // Get address
-	require_once 'classes/class-klarna-pms.php'; // PMS
-	require_once 'classes/class-klarna-order.php'; // Handles Klarna orders
-	require_once 'classes/class-klarna-payment-method-display-widget.php'; // WordPress widget
-	require_once 'classes/class-klarna-status.php'; // WooCommerce status page extension
-	require_once 'classes/class-klarna-cross-sells.php'; // Klarna Checkout cross-sells
+	require_once __DIR__ . '/classes/class-klarna-part-payment.php'; // KPM Part Payment
+	require_once __DIR__ . '/classes/class-klarna-invoice.php'; // KPM Invoice
+	require_once __DIR__ . '/classes/class-klarna-process-checkout-kpm.php'; // KPM process checkout fields
+	require_once __DIR__ . '/classes/class-klarna-payment-method-widget.php'; // Partpayment widget
+	require_once __DIR__ . '/classes/class-klarna-get-address.php'; // Get address
+	require_once __DIR__ . '/classes/class-klarna-pms.php'; // PMS
+	require_once __DIR__ . '/classes/class-klarna-order.php'; // Handles Klarna orders
+	require_once __DIR__ . '/classes/class-klarna-payment-method-display-widget.php'; // WordPress widget
+	require_once __DIR__ . '/classes/class-klarna-status.php'; // WooCommerce status page extension
+	require_once __DIR__ . '/classes/class-klarna-cross-sells.php'; // Klarna Checkout cross-sells
+	require_once __DIR__ . '/classes/class-klarna-checkout-remarketing.php'; // Klarna Checkout remarketing feature
 
 	// register Klarna Payment Method Display widget
 	function register_klarna_pmd_widget() {
@@ -217,9 +218,9 @@ function init_klarna_gateway() {
 	add_action( 'widgets_init', 'register_klarna_pmd_widget' );
 
 	// Klarna Checkout class
-	require_once 'classes/class-klarna-checkout.php';
-	require_once 'classes/class-klarna-shortcodes.php';
-	require_once 'classes/class-klarna-validate.php';
+	require_once __DIR__ . '/classes/class-klarna-checkout.php';
+	require_once __DIR__ . '/classes/class-klarna-shortcodes.php';
+	require_once __DIR__ . '/classes/class-klarna-validate.php';
 
 	// Send customer and merchant emails for KCO Incomplete > Processing status change
 
