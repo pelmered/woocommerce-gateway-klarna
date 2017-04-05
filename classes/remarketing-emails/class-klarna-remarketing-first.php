@@ -42,8 +42,8 @@ class WC_Klarna_Remarketing_First_Email extends WC_Email {
 		if ( $order_id ) {
 			// @TODO: Check if order was completed
 
-			$this->object    = wc_get_order( $order_id );
-			$this->recipient = $this->object->billing_email;
+			$order           = wc_get_order( $order_id );
+			$this->recipient = $order->billing_email;
 
 			if ( ! $this->is_enabled() || ! $this->get_recipient() ) {
 				return;
@@ -64,9 +64,8 @@ class WC_Klarna_Remarketing_First_Email extends WC_Email {
 		wc_get_template(
 			$this->template_html,
 			array(
-				'subscription'  => $this->object,
 				'email_heading' => $this->get_heading(),
-				'sent_to_admin' => true,
+				'sent_to_admin' => false,
 				'plain_text'    => false,
 				'email'         => $this,
 			),
@@ -87,9 +86,8 @@ class WC_Klarna_Remarketing_First_Email extends WC_Email {
 		wc_get_template(
 			$this->template_plain,
 			array(
-				'subscription'  => $this->object,
 				'email_heading' => $this->get_heading(),
-				'sent_to_admin' => true,
+				'sent_to_admin' => false,
 				'plain_text'    => true,
 				'email'         => $this,
 			),

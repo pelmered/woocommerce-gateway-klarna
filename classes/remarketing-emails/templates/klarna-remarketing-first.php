@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
 	<p><?php _e( 'You have items in the cart', 'woocommerce' ); ?></p>
-	<p><?php echo wc_get_checkout_url(); ?></p>
+	<p><a href="<?php echo wc_get_checkout_url(); ?>">Finalize your order</a></p>
 
 <?php
 /**
