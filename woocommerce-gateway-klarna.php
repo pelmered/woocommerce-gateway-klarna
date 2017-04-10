@@ -208,7 +208,7 @@ function init_klarna_gateway() {
 	require_once __DIR__ . '/classes/class-klarna-payment-method-display-widget.php'; // WordPress widget
 	require_once __DIR__ . '/classes/class-klarna-status.php'; // WooCommerce status page extension
 	require_once __DIR__ . '/classes/class-klarna-cross-sells.php'; // Klarna Checkout cross-sells
-	require_once __DIR__ . '/classes/class-klarna-checkout-remarketing.php'; // Klarna Checkout remarketing feature
+	require_once __DIR__ . '/includes/remarketing/class-klarna-checkout-remarketing.php'; // Klarna Checkout remarketing feature
 
 	// register Klarna Payment Method Display widget
 	function register_klarna_pmd_widget() {

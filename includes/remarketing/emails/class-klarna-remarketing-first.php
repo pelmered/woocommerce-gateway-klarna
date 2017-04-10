@@ -25,7 +25,7 @@ class WC_Klarna_Remarketing_First_Email extends WC_Email {
 
 		$this->template_html  = 'klarna-remarketing-first.php';
 		$this->template_plain = 'plain-class-klarna-remarketing-first.php';
-		$this->template_base  = KLARNA_DIR . 'classes/remarketing-emails/templates/';
+		$this->template_base  = KLARNA_DIR . 'includes/remarketing/emails/templates/';
 
 		add_action( 'choose_good_action_for_this', array( $this, 'trigger' ) );
 
