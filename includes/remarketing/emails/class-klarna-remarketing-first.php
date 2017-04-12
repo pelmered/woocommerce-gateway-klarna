@@ -24,42 +24,91 @@ class WC_Klarna_Remarketing_First_Email extends WC_Email {
 		$this->subject     = sprintf( _x( '[%s] Klarna Remarketing first email', 'default email subject for Klarna Remarketing first email', 'woocommerce-gateway-klarna' ), '{blogname}' );
 
 		$this->template_html  = 'klarna-remarketing-first.php';
-		$this->template_plain = 'plain-class-klarna-remarketing-first.php';
 		$this->template_base  = KLARNA_DIR . 'includes/remarketing/emails/templates/';
-
-		add_action( 'choose_good_action_for_this', array( $this, 'trigger' ) );
 
 		parent::__construct();
 	}
 
 	/**
+	 * Email settings.
+	 */
+	function init_form_fields() {
+		$this->form_fields    = array(
+			'enabled'         => array(
+				'title'       => __( 'Enable/Disable', 'woocommerce' ),
+				'type'        => 'checkbox',
+				'label'       => __( 'Enable this email', 'woocommerce' ),
+				'default'     => 'yes',
+			),
+			'subject'         => array(
+				'title'       => __( 'Email subject', 'woocommerce' ),
+				'type'        => 'text',
+				/* translators: %s: default subject */
+				'description' => sprintf( __( 'Defaults to %s', 'woocommerce' ), '<code>' . $this->subject . '</code>' ),
+				'placeholder' => '',
+				'default'     => '',
+				'desc_tip'    => true,
+			),
+			'heading'         => array(
+				'title'       => __( 'Email heading', 'woocommerce' ),
+				'type'        => 'text',
+				/* translators: %s: default heading */
+				'description' => sprintf( __( 'Defaults to %s', 'woocommerce' ), '<code>' . $this->heading . '</code>' ),
+				'placeholder' => '',
+				'default'     => '',
+				'desc_tip'    => true,
+			),
+			'send_time'       => array(
+				'title'       => __( 'How many hours after cart was created should this email be sent?', 'woocommerce' ),
+				'type'        => 'number',
+				'default'     => 12,
+			),
+		);
+	}
+
+	/**
 	 * trigger function.
 	 *
+	 * @param  $order_id WooCommerce order ID.
 	 * @access public
 	 * @return void
 	 */
-	function trigger( $order_id ) {
+	public function trigger( $order_id ) {
 		if ( $order_id ) {
-			// @TODO: Check if order was completed
+			$order = wc_get_order( $order_id );
 
-			$order           = wc_get_order( $order_id );
-			$this->recipient = $order->billing_email;
-
-			if ( ! $this->is_enabled() || ! $this->get_recipient() ) {
+			// If order status has changed, do nothing.
+			if ( 'kco-incomplete' !== $order->get_status() ) {
 				return;
 			}
 
-			$this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+			$this->recipient = $order->get_billing_email();
+
+			if ( ! $this->is_enabled() || ! $this->recipient ) {
+				return;
+			}
+
+			// Don't send the email if order has no items.
+			$order = wc_get_order( $order_id );
+			$order_items = $order->get_items();
+			if ( empty( $order_items ) ) {
+				return;
+			}
+
+			$this->send( $this->get_recipient(), $this->get_subject(), $this->get_email_content( $order_id ), $this->get_headers(), $this->get_attachments() );
+
+			do_action( 'klarna_remarketing_first_email_sent', $order_id );
 		}
 	}
 
 	/**
 	 * get_content_html function.
 	 *
+	 * @param  $order_id WooCommerce order ID.
 	 * @access public
 	 * @return string
 	 */
-	function get_content_html() {
+	function get_email_content( $order_id ) {
 		ob_start();
 		wc_get_template(
 			$this->template_html,
@@ -68,6 +117,7 @@ class WC_Klarna_Remarketing_First_Email extends WC_Email {
 				'sent_to_admin' => false,
 				'plain_text'    => false,
 				'email'         => $this,
+				'order_id'      => $order_id,
 			),
 			'',
 			$this->template_base
@@ -76,24 +126,31 @@ class WC_Klarna_Remarketing_First_Email extends WC_Email {
 	}
 
 	/**
-	 * get_content_plain function.
+	 * Get email content type. Always text/html for remarketing emails.
 	 *
-	 * @access public
 	 * @return string
 	 */
-	function get_content_plain() {
-		ob_start();
-		wc_get_template(
-			$this->template_plain,
-			array(
-				'email_heading' => $this->get_heading(),
-				'sent_to_admin' => false,
-				'plain_text'    => true,
-				'email'         => $this,
-			),
-			'',
-			$this->template_base
-		);
-		return ob_get_clean();
+	public function get_content_type() {
+		return 'text/html';
 	}
+
+	/**
+	 * Schedule first email.
+	 *
+	 * @param $order_id
+	 */
+	public function schedule_first_email( $order_id ) {
+		$order = wc_get_order( $order_id );
+
+		// We need to have both email and postcode before we can proceed.
+		if ( ! $order->get_billing_postcode() || ! $order->get_billing_email() ) {
+			return;
+		}
+
+		// Check if already scheduled
+		if ( ! wp_next_scheduled( 'kco_remarketing_email_1', $order_id ) ) {
+			wp_schedule_single_event( time() + 3600, 'kco_remarketing_email_1', array( $order_id ) );
+		}
+	}
+
 }

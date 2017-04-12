@@ -290,6 +290,8 @@ class WC_Gateway_Klarna_K2WC {
 			// Store which KCO credentials country was used.
 			update_post_meta( $order->id, '_klarna_credentials_country', $this->klarna_credentials_country );
 
+			do_action( 'kco_after_prepare_wc_order', $order->id );
+
 			return $order->id;
 		} else {
 			return false;

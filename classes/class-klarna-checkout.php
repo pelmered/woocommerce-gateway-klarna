@@ -936,6 +936,43 @@ class WC_Gateway_Klarna_Checkout extends WC_Gateway_Klarna {
 			wp_die();
 		}
 
+		// Get ongoing order.
+		$wc_order = false;
+		if ( WC()->session->get( 'ongoing_klarna_order' ) && wc_get_order( WC()->session->get( 'ongoing_klarna_order' ) ) ) {
+			$wc_order = wc_get_order( WC()->session->get( 'ongoing_klarna_order' ) );
+		}
+
+		// Capture postal code.
+		if ( isset( $_REQUEST['postal_code'] ) && is_string( $_REQUEST['postal_code'] ) ) {
+			WC()->customer->set_postcode( $_REQUEST['postal_code'] );
+			WC()->customer->set_shipping_postcode( $_REQUEST['postal_code'] );
+
+			// Save it to order
+			if ( $wc_order ) {
+				$wc_order->set_billing_postcode( $_REQUEST['postal_code'] );
+				if ( method_exists( $wc_order, 'save' ) ) {
+					$wc_order->save();
+				}
+			}
+		}
+
+		// Capture email
+		if ( isset( $_REQUEST['email'] ) && is_email( $_REQUEST['email'] ) ) {
+			WC()->customer->set_email( $_REQUEST['email'] );
+			WC()->customer->set_billing_email( $_REQUEST['email'] );
+
+			// Save it to order
+			if ( $wc_order ) {
+				$wc_order->set_billing_email( $_REQUEST['email'] );
+				if ( method_exists( $wc_order, 'save' ) ) {
+					$wc_order->save();
+				}
+			}
+		}
+
+
+
+
 		// Capture email.
 		if ( isset( $_REQUEST['email'] ) && is_string( $_REQUEST['email'] ) && ! is_user_logged_in() ) {
 			$this->update_or_create_local_order( $_REQUEST['email'] );
@@ -991,11 +1028,6 @@ class WC_Gateway_Klarna_Checkout extends WC_Gateway_Klarna {
 
 		$data = array();
 
-		// Capture postal code.
-		if ( isset( $_REQUEST['postal_code'] ) && is_string( $_REQUEST['postal_code'] ) ) {
-			WC()->customer->set_shipping_postcode( $_REQUEST['postal_code'] );
-		}
-
 		if ( ! defined( 'WOOCOMMERCE_CART' ) ) {
 			define( 'WOOCOMMERCE_CART', true );
 		}
@@ -1024,43 +1056,79 @@ class WC_Gateway_Klarna_Checkout extends WC_Gateway_Klarna {
 		if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'klarna_checkout_nonce' ) ) {
 			exit( 'Nonce can not be verified.' );
 		}
-		global $woocommerce;
+
 		$data = array();
+
+		// Get ongoing order.
+		$wc_order = false;
+		if ( WC()->session->get( 'ongoing_klarna_order' ) && wc_get_order( WC()->session->get( 'ongoing_klarna_order' ) ) ) {
+			$wc_order = wc_get_order( WC()->session->get( 'ongoing_klarna_order' ) );
+		}
+
 		// Capture postal code
 		if ( isset( $_REQUEST['postal_code'] ) && is_string( $_REQUEST['postal_code'] ) ) {
-			$woocommerce->customer->set_postcode( $_REQUEST['postal_code'] );
-			$woocommerce->customer->set_shipping_postcode( $_REQUEST['postal_code'] );
-		}
-		if ( isset( $_REQUEST['region'] ) && is_string( $_REQUEST['region'] ) ) {
-			$woocommerce->customer->set_state( $_REQUEST['region'] );
-			$woocommerce->customer->set_shipping_state( $_REQUEST['region'] );
-		}
-		if ( isset( $_REQUEST['country'] ) && is_string( $_REQUEST['country'] ) ) {
-			if ( 'gbr' == $_REQUEST['country'] ) {
-				$woocommerce->customer->set_country( 'GB' );
-				$woocommerce->customer->set_shipping_country( 'GB' );
-			} elseif ( 'usa' == $_REQUEST['country'] ) {
-				$woocommerce->customer->set_country( 'US' );
-				$woocommerce->customer->set_shipping_country( 'US' );
-			} elseif ( 'dnk' == $_REQUEST['country'] ) {
-				$woocommerce->customer->set_country( 'DK' );
-				$woocommerce->customer->set_shipping_country( 'DK' );
-			} elseif ( 'nld' == $_REQUEST['country'] ) {
-				$woocommerce->customer->set_country( 'NL' );
-				$woocommerce->customer->set_shipping_country( 'NL' );
+			WC()->customer->set_postcode( $_REQUEST['postal_code'] );
+			WC()->customer->set_shipping_postcode( $_REQUEST['postal_code'] );
+
+			// Save it to order
+			if ( $wc_order ) {
+				$wc_order->set_billing_postcode( $_REQUEST['postal_code'] );
+				if ( method_exists( $wc_order, 'save' ) ) {
+					$wc_order->save();
+				}
 			}
 		}
+
+		// Capture email
+		if ( isset( $_REQUEST['email'] ) && is_email( $_REQUEST['email'] ) ) {
+			WC()->customer->set_email( $_REQUEST['email'] );
+			WC()->customer->set_billing_email( $_REQUEST['email'] );
+
+			// Save it to order
+			if ( $wc_order ) {
+				$wc_order->set_billing_email( $_REQUEST['email'] );
+				if ( method_exists( $wc_order, 'save' ) ) {
+					$wc_order->save();
+				}
+			}
+		}
+
+		if ( isset( $_REQUEST['region'] ) && is_string( $_REQUEST['region'] ) ) {
+			WC()->customer->set_state( $_REQUEST['region'] );
+			WC()->customer->set_shipping_state( $_REQUEST['region'] );
+		}
+
+		if ( isset( $_REQUEST['country'] ) && is_string( $_REQUEST['country'] ) ) {
+			if ( 'gbr' == $_REQUEST['country'] ) {
+				WC()->customer->set_country( 'GB' );
+				WC()->customer->set_shipping_country( 'GB' );
+			} elseif ( 'usa' == $_REQUEST['country'] ) {
+				WC()->customer->set_country( 'US' );
+				WC()->customer->set_shipping_country( 'US' );
+			} elseif ( 'dnk' == $_REQUEST['country'] ) {
+				WC()->customer->set_country( 'DK' );
+				WC()->customer->set_shipping_country( 'DK' );
+			} elseif ( 'nld' == $_REQUEST['country'] ) {
+				WC()->customer->set_country( 'NL' );
+				WC()->customer->set_shipping_country( 'NL' );
+			}
+		}
+
 		if ( ! defined( 'WOOCOMMERCE_CART' ) ) {
 			define( 'WOOCOMMERCE_CART', true );
 		}
-		$woocommerce->cart->calculate_shipping();
-		$woocommerce->cart->calculate_fees();
-		$woocommerce->cart->calculate_totals();
+
+		WC()->cart->calculate_shipping();
+		WC()->cart->calculate_fees();
+		WC()->cart->calculate_totals();
 		$this->update_or_create_local_order();
+
 		$data['widget_html'] = $this->klarna_checkout_get_kco_widget_html();
+
 		if ( WC()->session->get( 'klarna_checkout' ) ) {
 			$this->ajax_update_klarna_order();
 		}
+
 		wp_send_json_success( $data );
 		wp_die();
 	}
@@ -1511,6 +1579,7 @@ class WC_Gateway_Klarna_Checkout extends WC_Gateway_Klarna {
 		$klarna_to_wc->set_klarna_test_mode( $this->testmode );
 		$klarna_to_wc->set_klarna_server( $this->klarna_server );
 		$klarna_to_wc->set_klarna_credentials_country( $this->klarna_credentials_country );
+
 		if ( $customer_email ) {
 			$orderid = $klarna_to_wc->prepare_wc_order( $customer_email );
 		} else {
@@ -1924,7 +1993,8 @@ class WC_Gateway_Klarna_Checkout extends WC_Gateway_Klarna {
 	function pass_ajax_actions_to_wcml( $actions ) {
 		$actions[] = 'kco_iframe_change_cb';
 		$actions[] = 'kco_iframe_shipping_address_change_cb';
-		$actions[] = 'kco_iframe_shipping_option_change_cb';
+		$actions[] = 'kco_iframe_shipping_address_change_cb';
+		$actions[] = 'kco_iframe_shipping_address_change_v2_cb';
 		$actions[] = 'klarna_checkout_remove_coupon_callback';
 		$actions[] = 'klarna_checkout_coupons_callback';
 		$actions[] = 'klarna_checkout_cart_callback_remove';

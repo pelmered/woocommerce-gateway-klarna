@@ -1,19 +1,8 @@
 <?php
 /**
- * Customer on-hold order email
+ * Klarna Checkout remarketing first email
  *
- * This template can be overridden by copying it to yourtheme/woocommerce/emails/customer-processing-order.php.
- *
- * HOWEVER, on occasion WooCommerce will need to update template files and you
- * (the theme developer) will need to copy the new files to your theme to
- * maintain compatibility. We try to do this as little as possible, but it does
- * happen. When this occurs the version of the template file will be bumped and
- * the readme will list any important changes.
- *
- * @see 	    https://docs.woocommerce.com/document/template-structure/
- * @author 		WooThemes
- * @package 	WooCommerce/Templates/Emails
- * @version     2.5.0
+ * This template can be overridden by copying it to yourtheme/woocommerce/emails/klarna-remarketing-first.php.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -26,7 +15,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
 	<p><?php _e( 'You have items in the cart', 'woocommerce' ); ?></p>
-	<p><a href="<?php echo wc_get_checkout_url(); ?>">Finalize your order</a></p>
+
+	<?php
+	$incomplete_order = wc_get_order( $order_id );
+	$order_items = $incomplete_order->get_items();
+	foreach ( $order_items as $order_item ) {
+		echo $order_item['product_id'];
+	}
+	?>
+
+	<?php
+	$remarketing_url = add_query_arg(
+		array(
+			'cart_id' => $order_id,
+		),
+		wc_get_checkout_url()
+	);
+	?>
+	<p><a href="<?php echo $remarketing_url; ?>">Finalize your order</a></p>
 
 <?php
 /**

@@ -620,6 +620,7 @@ jQuery(document).ready(function ($) {
 										action: 'kco_iframe_shipping_address_change_v2_cb',
 										postal_code: data.postal_code,
 										country: data.country,
+										email: data.email,
 										nonce: kcoAjax.klarna_checkout_nonce
 									}
 								})
@@ -675,6 +676,7 @@ jQuery(document).ready(function ($) {
 											region: data.region,
 											postal_code: data.postal_code,
 											country: data.country,
+											email: data.email,
 											nonce: kcoAjax.klarna_checkout_nonce
 										},
 										success: function (response) {
