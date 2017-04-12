@@ -1,8 +1,8 @@
 <?php
 /**
- * Klarna Checkout remarketing first email
+ * Klarna Checkout remarketing second email
  *
- * This template can be overridden by copying it to yourtheme/woocommerce/emails/klarna-remarketing-first.php.
+ * This template can be overridden by copying it to yourtheme/woocommerce/emails/klarna-remarketing-second.php.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,18 +15,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
 	<p>Hi,</p>
-	<p>You've done the hard work, now you can relax. We've kept the products you had your eye on, so you can skip the queue and go straight to checkout.</p>
+	<p>Your shopping cart at <?php echo wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES ); ?> has been reserved and is waiting for your return.</p>
 
 	<p>Your cart:</p>
 
 	<ul>
-	<?php
-	$incomplete_order = wc_get_order( $order_id );
-	$order_items = $incomplete_order->get_items();
-	foreach ( $order_items as $order_item ) {
-		echo '<li>' . $order_item['quantity'] . ' * ' . $order_item['name'] . ' - ' . wc_price( $order_item['total'] / $order_item['quantity'] ) . '</li>';
-	}
-	?>
+		<?php
+		$incomplete_order = wc_get_order( $order_id );
+		$order_items = $incomplete_order->get_items();
+		foreach ( $order_items as $order_item ) {
+			echo '<li>' . $order_item['quantity'] . ' * ' . $order_item['name'] . ' - ' . wc_price( $order_item['total'] / $order_item['quantity'] ) . '</li>';
+		}
+		?>
 	</ul>
 
 	<?php

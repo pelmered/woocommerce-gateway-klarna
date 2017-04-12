@@ -3,26 +3,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 /**
- * Klarna remarketing first email
+ * Klarna remarketing third email
  *
  * @class 	WC_Gateway_Klarna_Checkout_Remarketing
  * @extends WC_Email
  */
-class WC_Klarna_Remarketing_First_Email extends WC_Email {
+class WC_Klarna_Remarketing_Third_Email extends WC_Email {
 
 	/**
 	 * Create an instance of the class.
 	 */
 	function __construct() {
-		$this->id             = 'klarna_remarketing_first';
+		$this->id             = 'klarna_remarketing_third';
 		$this->customer_email = true;
-		$this->description    = __( 'Klarna Remarketing First Email.', 'woocommerce-gateway-klarna' );
+		$this->description    = __( 'Klarna Remarketing Third Email.', 'woocommerce-gateway-klarna' );
 
-		$this->heading     = __( 'You left items in your cart', 'woocommerce-gateway-klarna' );
+		$this->heading     = __( 'Hurry up before your cart expires!', 'woocommerce-gateway-klarna' );
 		// translators: placeholder is {blogname}, a variable that will be substituted when email is sent out
-		$this->subject     = sprintf( _x( '[%s] You left items in your cart', 'default email subject for Klarna Remarketing first email', 'woocommerce-gateway-klarna' ), '{blogname}' );
+		$this->subject     = sprintf( _x( '[%s] Hurry up before your cart expires!', 'default email subject for Klarna Remarketing third email', 'woocommerce-gateway-klarna' ), '{blogname}' );
 
-		$this->template_html  = 'klarna-remarketing-first.php';
+		$this->template_html  = 'klarna-remarketing-third.php';
 		$this->template_base  = KLARNA_DIR . 'includes/remarketing/emails/templates/';
 
 		parent::__construct();
@@ -40,7 +40,7 @@ class WC_Klarna_Remarketing_First_Email extends WC_Email {
 				'default'     => 'yes',
 			),
 			'subject'         => array(
-				'title'       => __( 'Subject', 'woocommerce' ),
+				'title'       => __( 'Email subject', 'woocommerce' ),
 				'type'        => 'text',
 				/* translators: %s: default subject */
 				'description' => sprintf( __( 'Defaults to %s', 'woocommerce' ), '<code>' . $this->subject . '</code>' ),
@@ -49,7 +49,7 @@ class WC_Klarna_Remarketing_First_Email extends WC_Email {
 				'desc_tip'    => true,
 			),
 			'heading'         => array(
-				'title'       => __( 'Heading', 'woocommerce' ),
+				'title'       => __( 'Email heading', 'woocommerce' ),
 				'type'        => 'text',
 				/* translators: %s: default heading */
 				'description' => sprintf( __( 'Defaults to %s', 'woocommerce' ), '<code>' . $this->heading . '</code>' ),
@@ -58,9 +58,9 @@ class WC_Klarna_Remarketing_First_Email extends WC_Email {
 				'desc_tip'    => true,
 			),
 			'send_time'       => array(
-				'title'       => __( 'How many hours after cart was created should this email be sent?', 'woocommerce' ),
+				'title'       => __( 'How many days after second email should this email be sent?', 'woocommerce' ),
 				'type'        => 'number',
-				'default'     => 12,
+				'default'     => 7,
 			),
 		);
 	}
@@ -96,7 +96,7 @@ class WC_Klarna_Remarketing_First_Email extends WC_Email {
 
 			$this->send( $this->get_recipient(), $this->get_subject(), $this->get_email_content( $order_id ), $this->get_headers(), $this->get_attachments() );
 
-			do_action( 'klarna_remarketing_first_email_sent', $order_id );
+			do_action( 'klarna_remarketing_third_email_sent', $order_id );
 		}
 	}
 
@@ -134,11 +134,11 @@ class WC_Klarna_Remarketing_First_Email extends WC_Email {
 	}
 
 	/**
-	 * Schedule first email.
+	 * Schedule third email.
 	 *
 	 * @param $order_id
 	 */
-	public function schedule_first_email( $order_id ) {
+	public function schedule_third_email( $order_id ) {
 		$order = wc_get_order( $order_id );
 
 		// We need to have both email and postcode before we can proceed.
