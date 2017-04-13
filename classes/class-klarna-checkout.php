@@ -963,15 +963,14 @@ class WC_Gateway_Klarna_Checkout extends WC_Gateway_Klarna {
 
 			// Save it to order
 			if ( $wc_order ) {
-				$wc_order->set_billing_email( $_REQUEST['email'] );
-				if ( method_exists( $wc_order, 'save' ) ) {
-					$wc_order->save();
+				if ( 'guest_checkout@klarna.com' !== $_REQUEST['email'] ) {
+					$wc_order->set_billing_email( $_REQUEST['email'] );
+					if ( method_exists( $wc_order, 'save' ) ) {
+						$wc_order->save();
+					}
 				}
 			}
 		}
-
-
-
 
 		// Capture email.
 		if ( isset( $_REQUEST['email'] ) && is_string( $_REQUEST['email'] ) && ! is_user_logged_in() ) {
@@ -1556,18 +1555,31 @@ class WC_Gateway_Klarna_Checkout extends WC_Gateway_Klarna {
 			global $current_user;
 			$customer_email = $current_user->user_email;
 		}
-		if ( '' == $customer_email ) {
+
+		if ( is_email( $_REQUEST['email'] ) && 'guest_checkout@klarna.com' !== $_REQUEST['email'] ) {
+			$customer_email = $_REQUEST['email'];
+		}
+
+		if ( '' === $customer_email || 'guest_checkout@klarna.com' === $customer_email ) {
+			if ( WC()->session->get( 'ongoing_klarna_order' ) && wc_get_order( WC()->session->get( 'ongoing_klarna_order' ) ) ) {
+				$wc_order = wc_get_order( WC()->session->get( 'ongoing_klarna_order' ) );
+				if ( $wc_order->get_billing_email() ) {
+					$customer_email = $wc_order->get_billing_email();
+				}
+			}
+		}
+
+		if ( ! is_email( $customer_email ) ) {
 			$customer_email = 'guest_checkout@klarna.com';
 		}
-		if ( ! is_email( $customer_email ) ) {
-			return;
-		}
+
 		// Check quantities
-		global $woocommerce;
-		$result = $woocommerce->cart->check_cart_item_stock();
+		$result = WC()->cart->check_cart_item_stock();
+
 		if ( is_wp_error( $result ) ) {
 			return $result->get_error_message();
 		}
+
 		// Update the local order
 		include_once( KLARNA_DIR . 'classes/class-klarna-to-wc.php' );
 		$klarna_to_wc = new WC_Gateway_Klarna_K2WC();

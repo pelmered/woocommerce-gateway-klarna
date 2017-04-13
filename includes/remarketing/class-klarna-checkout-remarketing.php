@@ -41,11 +41,13 @@ class WC_Gateway_Klarna_Checkout_Remarketing {
 			add_action( 'klarna_remarketing_first_email_sent', array( $this, 'schedule_second_email' ) );
 			add_action( 'klarna_remarketing_second_email_sent', array( $this, 'schedule_third_email' ) );
 
+			// @TODO: Schedule email 10 minutes after user email address is captured.
 			add_action( 'kco_remarketing_email_1', array( $this, 'trigger_first_email' ) );
 			add_action( 'kco_remarketing_email_2', array( $this, 'trigger_second_email' ) );
 			add_action( 'kco_remarketing_email_3', array( $this, 'trigger_third_email' ) );
 
 			add_action( 'woocommerce_order_status_kco-incomplete_to_pending', array( $this, 'unschedule_emails_on_completion' ) );
+			add_action( 'klarna_before_kco_confirmation', array( $this, 'unschedule_emails_on_completion' ) );
 		}
 	}
 
@@ -71,7 +73,6 @@ class WC_Gateway_Klarna_Checkout_Remarketing {
 	}
 
 	public function unschedule_emails_on_completion( $order_id ) {
-		$a = 1;
 		if ( $timestamp_1 = wp_next_scheduled( 'kco_remarketing_email_1', array( $order_id ) ) ) {
 			wp_unschedule_event( $timestamp_1, 'kco_remarketing_email_1', array( $order_id ) );
 		}
@@ -161,27 +162,6 @@ class WC_Gateway_Klarna_Checkout_Remarketing {
 					}
 				}
 			}
-
-			/*
-			$product_id = 99;
-			$found = false;
-			// Check if product already in cart
-			if ( sizeof( WC()->cart->get_cart() ) > 0 ) {
-				foreach ( WC()->cart->get_cart() as $cart_item_key => $values ) {
-					$_product = $values['data'];
-					if ( $_product->id === $product_id ) {
-						$found = true;
-					}
-				}
-				// if product not found, add it
-				if ( ! $found ) {
-					WC()->cart->add_to_cart( $product_id );
-				}
-			} else {
-				// if no products in cart, add it
-				WC()->cart->add_to_cart( $product_id );
-			}
-			*/
 		}
 	}
 
@@ -221,6 +201,11 @@ class WC_Gateway_Klarna_Checkout_Remarketing {
 
 		// We need to have both email and postcode before we can proceed.
 		if ( ! $order->get_billing_postcode() || ! $order->get_billing_email() ) {
+			return;
+		}
+
+		// Only schedule if we have a real email.
+		if ( 'guest_checkout@klarna.com' === $order->get_billing_email() ) {
 			return;
 		}
 

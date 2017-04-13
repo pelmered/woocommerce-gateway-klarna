@@ -561,6 +561,7 @@ jQuery(document).ready(function ($) {
 										$(document.body).trigger('kco_widget_update', data);
 
 
+										console.log(data);
 										$.ajaxq('KCOQueue', {
 											url: kcoAjax.ajaxurl,
 											type: 'POST',
