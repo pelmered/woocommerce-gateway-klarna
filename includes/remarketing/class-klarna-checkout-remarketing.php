@@ -77,12 +77,12 @@ class WC_Gateway_Klarna_Checkout_Remarketing {
 			wp_unschedule_event( $timestamp_1, 'kco_remarketing_email_1', array( $order_id ) );
 		}
 
-		if ( $timestamp_2 = wp_next_scheduled( 'kco_remarketing_email_1', array( $order_id ) ) ) {
-			wp_unschedule_event( $timestamp_2, 'kco_remarketing_email_1', array( $order_id ) );
+		if ( $timestamp_2 = wp_next_scheduled( 'kco_remarketing_email_2', array( $order_id ) ) ) {
+			wp_unschedule_event( $timestamp_2, 'kco_remarketing_email_2', array( $order_id ) );
 		}
 
-		if ( $timestamp_3 = wp_next_scheduled( 'kco_remarketing_email_1', array( $order_id ) ) ) {
-			wp_unschedule_event( $timestamp_3, 'kco_remarketing_email_1', array( $order_id ) );
+		if ( $timestamp_3 = wp_next_scheduled( 'kco_remarketing_email_3', array( $order_id ) ) ) {
+			wp_unschedule_event( $timestamp_3, 'kco_remarketing_email_3', array( $order_id ) );
 		}
 	}
 

@@ -16,6 +16,7 @@ class WC_Klarna_Remarketing_Second_Email extends WC_Email {
 	function __construct() {
 		$this->id             = 'klarna_remarketing_second';
 		$this->customer_email = true;
+		$this->title          = __( 'Klarna Remarketing 2', 'woocommerce-gateway-klarna' );
 		$this->description    = __( 'Klarna Remarketing Second Email.', 'woocommerce-gateway-klarna' );
 
 		$this->heading     = __( 'We’re still holding the cart for you!', 'woocommerce-gateway-klarna' );

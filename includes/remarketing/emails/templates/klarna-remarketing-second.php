@@ -19,15 +19,13 @@ do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
 	<p>Your cart:</p>
 
-	<ul>
-		<?php
-		$incomplete_order = wc_get_order( $order_id );
-		$order_items = $incomplete_order->get_items();
-		foreach ( $order_items as $order_item ) {
-			echo '<li>' . $order_item['quantity'] . ' * ' . $order_item['name'] . ' - ' . wc_price( $order_item['total'] / $order_item['quantity'] ) . '</li>';
-		}
-		?>
-	</ul>
+	<?php $incomplete_order = wc_get_order( $order_id ); ?>
+
+	<table class="td" cellspacing="0" cellpadding="6" style="width: 100%; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; margin-bottom: 16px; border: none; border-collapse:collapse" border="0">
+		<tbody>
+		<?php echo wc_get_email_order_items( $incomplete_order, array( 'show_image' => true ) ); ?>
+		</tbody>
+	</table>
 
 	<?php
 	$postal_code = $incomplete_order->get_billing_postcode();
@@ -41,6 +39,7 @@ do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 		wc_get_checkout_url()
 	);
 	?>
+
 	<p><a href="<?php echo $remarketing_url; ?>">Go to checkout</a></p>
 
 <?php

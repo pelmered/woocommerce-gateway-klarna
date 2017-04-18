@@ -16,6 +16,7 @@ class WC_Klarna_Remarketing_First_Email extends WC_Email {
 	function __construct() {
 		$this->id             = 'klarna_remarketing_first';
 		$this->customer_email = true;
+		$this->title          = __( 'Klarna Remarketing 1', 'woocommerce-gateway-klarna' );
 		$this->description    = __( 'Klarna Remarketing First Email.', 'woocommerce-gateway-klarna' );
 
 		$this->heading     = __( 'You left items in your cart', 'woocommerce-gateway-klarna' );
