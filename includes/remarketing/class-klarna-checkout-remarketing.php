@@ -41,11 +41,12 @@ class WC_Gateway_Klarna_Checkout_Remarketing {
 			add_action( 'klarna_remarketing_first_email_sent', array( $this, 'schedule_second_email' ) );
 			add_action( 'klarna_remarketing_second_email_sent', array( $this, 'schedule_third_email' ) );
 
-			// @TODO: Schedule email 10 minutes after user email address is captured.
+			// @TODO: Schedule email 10 minutes after user email address is captured instead of immediately.
 			add_action( 'kco_remarketing_email_1', array( $this, 'trigger_first_email' ) );
 			add_action( 'kco_remarketing_email_2', array( $this, 'trigger_second_email' ) );
 			add_action( 'kco_remarketing_email_3', array( $this, 'trigger_third_email' ) );
 
+			// Unschedule any remaining emails.
 			add_action( 'woocommerce_order_status_kco-incomplete_to_pending', array( $this, 'unschedule_emails_on_completion' ) );
 			add_action( 'klarna_before_kco_confirmation', array( $this, 'unschedule_emails_on_completion' ) );
 		}
