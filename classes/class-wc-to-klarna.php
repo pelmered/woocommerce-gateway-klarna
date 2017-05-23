@@ -338,6 +338,12 @@ class WC_Gateway_Klarna_WC2K {
 				$item_tax_rate = 00;
 			} else {
 				$item_tax_rate = round( $cart_item['line_subtotal_tax'] / $cart_item['line_subtotal'] * 100 * 100 );
+
+				$logger = new WC_Logger();
+				$logger->add( 'klarna', 'Cart item line subtotal tax: ' . $cart_item['line_subtotal_tax'] );
+				$logger->add( 'klarna', 'Cart item line subtotal: ' . $cart_item['line_subtotal'] );
+				$logger->add( 'klarna', 'Item tax rate: ' . $item_tax_rate );
+				$logger->add( 'klarna', 'Item tax rate intval: ' . intval( $item_tax_rate ) );
 			}
 		} else {
 			$item_tax_rate = 00;
