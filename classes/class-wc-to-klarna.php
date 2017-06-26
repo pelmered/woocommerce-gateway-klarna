@@ -346,6 +346,7 @@ class WC_Gateway_Klarna_WC2K {
 			$item_tax_rate = 00;
 		}
 
+		$klarna_log->add( 'klarna', 'Cart item calculated tax rate for Klarna: ' . intval( $item_tax_rate ) );
 		return intval( $item_tax_rate );
 	}
 
