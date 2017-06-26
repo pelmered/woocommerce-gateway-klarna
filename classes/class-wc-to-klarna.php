@@ -331,6 +331,9 @@ class WC_Gateway_Klarna_WC2K {
 	 * @return integer $item_tax_rate Item tax percentage formatted for Klarna.
 	 */
 	public function get_item_tax_rate( $cart_item, $_product ) {
+		$klarna_log = new WC_Logger();
+		$klarna_log->add( 'klarna', 'Cart item before sending to Klarna: ' . var_export( $cart_item, true ) );
+
 		// We manually calculate the tax percentage here.
 		if ( $_product->is_taxable() && $cart_item['line_subtotal_tax'] > 0 ) {
 			// Calculate tax rate.
