@@ -103,18 +103,24 @@ WC()->cart->calculate_shipping();
 WC()->cart->calculate_totals();
 
 // Add user ID, in case listener did not do it already.
+$ty_log->add( 'klarna', 'customer1' );
 if ( $order->get_user_id() === 0 ) {
+	$ty_log->add( 'klarna', 'customer2' );
 	if ( email_exists( $klarna_order['billing_address']['email'] ) ) {
+		$ty_log->add( 'klarna', 'customer3' );
 		$user        = get_user_by( 'email', $klarna_order['billing_address']['email'] );
 		$customer_id = $user->ID;
 		update_post_meta( $order_id, '_customer_user', $customer_id );
 	} else {
+		$ty_log->add( 'klarna', 'customer4' );
 		// Create new user.
 		$checkout_settings = get_option( 'woocommerce_klarna_checkout_settings' );
 		if ( 'yes' === $checkout_settings['create_customer_account'] ) {
+			$ty_log->add( 'klarna', 'customer5' );
 			$customer_id = wc_create_new_customer( $klarna_order['billing_address']['email'] );
 
 			if ( is_int( $customer_id ) ) {
+				$ty_log->add( 'klarna', 'customer6' );
 				update_post_meta( $order_id, '_customer_user', $customer_id );
 			}
 		}
