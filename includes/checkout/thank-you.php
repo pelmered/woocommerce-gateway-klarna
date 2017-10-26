@@ -119,6 +119,10 @@ if ( $order->get_user_id() === 0 ) {
 			$ty_log->add( 'klarna', 'customer5' );
 			$customer_id = wc_create_new_customer( $klarna_order['billing_address']['email'] );
 
+			if ( is_wp_error( $customer_id ) ) {
+				$ty_log->add( 'klarna', $customer_id->get_error_message() );
+			}
+
 			if ( is_int( $customer_id ) ) {
 				$ty_log->add( 'klarna', 'customer6' );
 				update_post_meta( $order_id, '_customer_user', $customer_id );
