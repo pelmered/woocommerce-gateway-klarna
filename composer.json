@@ -1,5 +1,5 @@
 {
-	"name"       : "krokedil/woocommerce-gateway-klarna",
+	"name"       : "woocommerce/woocommerce-gateway-klarna",
 	"description": "A Klarna payments integration for WooCommerce.",
 	"homepage"   : "https://krokedil.com/klarna",
 	"keywords"   : ["WooCommerce", "Klarna", "Gateway", "Klarna checkout"],
